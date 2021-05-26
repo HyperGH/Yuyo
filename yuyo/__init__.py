@@ -68,7 +68,7 @@ __all__: typing.Sequence[str] = [
     "WaitForComponent",
     # list_status.py
     "CountStrategyProto",
-    "DispatcherStrategy",
+    "EventStrategy",
     "RESTStrategy",
     "ManagerProto",
     "ServiceProto",
