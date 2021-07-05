@@ -69,11 +69,12 @@ __all__: typing.Sequence[str] = [
     # list_status.py
     "CountStrategyProto",
     "EventStrategy",
-    "RESTStrategy",
     "ManagerProto",
     "ServiceProto",
     "ServiceManager",
-    "TopGG",
+    "make_bots_gg_service",
+    "make_d_bots_service",
+    "make_top_gg_service",
     # /reactions.py
     "reactions",
     "as_reaction_callback",
