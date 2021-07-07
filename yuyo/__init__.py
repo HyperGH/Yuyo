@@ -73,7 +73,7 @@ __all__: typing.Sequence[str] = [
     "ServiceProto",
     "ServiceManager",
     "make_bots_gg_service",
-    "make_d_bots_service",
+    "make_d_boats_service",
     "make_top_gg_service",
     # /reactions.py
     "reactions",
