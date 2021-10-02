@@ -241,15 +241,15 @@ class ComponentContext:
             The content to respond with.
 
             If provided, the message contents. If
-            `hikari.undefined.UNDEFINED`, then nothing will be sent
+            `hikari.UNDEFINED`, then nothing will be sent
             in the content. Any other value here will be cast to a
             `str`.
 
-            If this is a `hikari.embeds.Embed` and no `embed` nor `embeds` kwarg
+            If this is a `hikari.Embed` and no `embed` nor `embeds` kwarg
             is provided, then this will instead update the embed. This allows
             for simpler syntax when sending an embed alone.
 
-            Likewise, if this is a `hikari.files.Resource`, then the
+            Likewise, if this is a `hikari.Resource`, then the
             content is instead treated as an attachment if no `attachment` and
             no `attachments` kwargs are provided.
 
@@ -283,14 +283,14 @@ class ComponentContext:
             If provided, and `True`, all mentions will be parsed.
             If provided, and `False`, no mentions will be parsed.
             Alternatively this may be a collection of
-            `hikari.snowflakes.Snowflake`, or `hikari.users.PartialUser`
+            `hikari.Snowflake`, or `hikari.PartialUser`
             derivatives to enforce mentioning specific users.
         role_mentions : hikari.undefined.UndefinedOr[typing.Union[hikari.snowflakes.SnowflakeishSequence[hikari.guilds.PartialRole], bool]]
             If provided, and `True`, all mentions will be parsed.
             If provided, and `False`, no mentions will be parsed.
             Alternatively this may be a collection of
-            `hikari.snowflakes.Snowflake`, or
-            `hikari.guilds.PartialRole` derivatives to enforce mentioning
+            `hikari.Snowflake`, or
+            `hikari.PartialRole` derivatives to enforce mentioning
             specific roles.
 
         Notes
@@ -300,18 +300,18 @@ class ComponentContext:
         * If a `pathlib.PurePath` or `str` to a valid URL, the
             resource at the given URL will be streamed to Discord when
             sending the message. Subclasses of
-            `hikari.files.WebResource` such as
-            `hikari.files.URL`,
-            `hikari.messages.Attachment`,
-            `hikari.emojis.Emoji`,
+            `hikari.WebResource` such as
+            `hikari.URL`,
+            `hikari.Attachment`,
+            `hikari.Emoji`,
             `EmbedResource`, etc will also be uploaded this way.
             This will use bit-inception, so only a small percentage of the
             resource will remain in memory at any one time, thus aiding in
             scalability.
-        * If a `hikari.files.Bytes` is passed, or a `str`
+        * If a `hikari.Bytes` is passed, or a `str`
             that contains a valid data URI is passed, then this is uploaded
             with a randomized file name if not provided.
-        * If a `hikari.files.File`, `pathlib.PurePath` or
+        * If a `hikari.File`, `pathlib.PurePath` or
             `str` that is an absolute or relative path to a file
             on your file system is passed, then this resource is uploaded
             as an attachment using non-blocking code internally and streamed

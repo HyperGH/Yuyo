@@ -347,9 +347,9 @@ class ReactionPaginator(ReactionHandler):
         Either an asynchronous or synchronous iterator of the entries this
         should paginate through.
         Entry[0] represents the message's possible content and can either be
-        `builtins.str` or `hikari.undefined.UNDEFINED` and Entry[1] represents
-        the message's possible embed and can either be `hikari.embeds.Embed`
-        or `hikari.undefined.UNDEFINED`.
+        `str` or `hikari.UNDEFINED` and Entry[1] represents
+        the message's possible embed and can either be `hikari.Embed`
+        or `hikari.UNDEFINED`.
     authors : typing.Iterable[hikari.snowflakes.SnowflakeishOr[hikari.users.User]]
         An iterable of IDs of the users who can call this paginator.
         If left empty then all users will be able to call this
@@ -510,10 +510,10 @@ class ReactionPaginator(ReactionHandler):
 
         Other Parameters
         ----------------
-        remove_reactions : builtins.bool
+        remove_reactions : bool
             Whether this should remove the reactions that were being used to
             paginate through this from the previously registered message.
-            This defaults to `builtins.False`.
+            This defaults to `False`.
         """
         if message := self._message:
             self._message = None
@@ -599,12 +599,12 @@ class ReactionPaginator(ReactionHandler):
         ----------------
         message : typing.Optional[hikari.messages.Message]
             If already created, the message this handler should target.
-            If left as `builtins.None` then this call will create a message
+            If left as `None` then this call will create a message
             in the channel provided when initiating the handler.
         add_reactions : bool
             Whether this should also add reactions that'll be used to paginate
             over this resource.
-            This defaults to `builtins.True`.
+            This defaults to `True`.
 
         !!! note
             Calling this multiple times will replace the previously registered message.
@@ -785,7 +785,7 @@ class ReactionClient:
         Returns
         -------
         AbstractReactionHandler
-            The object of the registered paginator if found else `builtins.None`.
+            The object of the registered paginator if found else `None`.
         """
         return self._handlers.get(hikari.Snowflake(message))
 
@@ -805,7 +805,7 @@ class ReactionClient:
         Returns
         -------
         AbstractReactionHandler
-            The object of the registered paginator if found else `builtins.None`.
+            The object of the registered paginator if found else `None`.
         """
         return self._handlers.pop(hikari.Snowflake(message))
 
