@@ -60,27 +60,27 @@ class Backoff:
 
     Other Parameters
     ----------------
-    max_retries : typing.Optional[builtins.int]
+    max_retries : int | None
         The maximum amount of times this should iterate for between resets.
-        If left as `builtins.None` then this iterator will be unlimited.
+        If left as `None` then this iterator will be unlimited.
         This must be greater than or equal to 1.
-    base : builtins.float
+    base : float
         The base to use. Defaults to `2.0`.
-    maximum : builtins.float
+    maximum : float
         The max value the backoff can be in a single iteration. Anything above
         this will be capped to this base value plus random jitter.
-    jitter_multiplier : builtins.float
+    jitter_multiplier : float
         The multiplier for the random jitter. Defaults to `1.0`.
         Set to `0` to disable jitter.
-    initial_increment : builtins.int
+    initial_increment : int
         The initial increment to start at. Defaults to `0`.
 
     Raises
     ------
     ValueError
-        If an `builtins.int` that's too big to be represented as a
-        `builtins.float` or a non-finite value is passed in place of a field
-        that's annotated as `builtins.float` or if `max_retries` is less than 1.
+        If an `int` that's too big to be represented as a
+        `float` or a non-finite value is passed in place of a field
+        that's annotated as `float` or if `max_retries` is less than 1.
 
     Examples
     --------
@@ -112,7 +112,7 @@ class Backoff:
 
     ```py
     backoff = Backoff()
-    message: typing.Optional[messages.Message] = None
+    message: messages.Message | None = None
     while not message:
         try:
             message = await bot.rest.fetch_message(channel_id, message_id)
@@ -187,8 +187,8 @@ class Backoff:
 
         Parameters
         ----------
-        backoff_ : typing.Optional[float]
-            The time this should backoff for. If left as `builtins.None` then
+        backoff_ : float | None
+            The time this should backoff for. If left as `None` then
             this will back off for the last time provided with
             `Backoff.set_next_backoff` if available or the next exponential time.
         """
@@ -232,7 +232,7 @@ class ErrorManager:
 
     Other Parameters
     ----------------
-    *rules : typing.Tuple[typing.Iterable[typing.Type[BaseException]], typing.Callable[[typing.Any], typing.Optional[bool]]]
+    *rules : tuple[collections.abc.Iterable[type[BaseException]], collections.abc.Callable[[typing.Any], bool | None]]
         Rules to initiate this error context manager with.
 
         These are each a 2-length tuple where the tuple[0] is an
@@ -241,9 +241,9 @@ class ErrorManager:
 
         The callback function will be called with the raised exception when it
         matches one of the passed exceptions for the relevant rule and may
-        raise, return `builtins.True` to indicate that the current error should
+        raise, return `True` to indicate that the current error should
         be raised outside of the context manager or
-        `builtins.False`/`builtins.None` to suppress the current error.
+        `False`/`None` to suppress the current error.
 
     Examples
     --------
@@ -324,14 +324,14 @@ class ErrorManager:
 
         Parameters
         ----------
-        exceptions : typing.Iterable[typing.Type[builtins.BaseException]]
+        exceptions : collections.abc.Iterable[type[BaseException]]
             An iterable of types of the exceptions this rule should apply to.
-        result : typing.Callable[[typing.Any], typing.Optional[builtins.bool]]
+        result : collections.abc.Callable[[typing.Any], bool | None]
             The function called with the raised exception when it matches one
             of the passed `exceptions`.
-            This may raise, return `builtins.True` to indicate that the current
+            This may raise, return `True` to indicate that the current
             error should be raised outside of the context manager or
-            `builtins.False`/`builtins.None` to suppress the current error.
+            `False`/`None` to suppress the current error.
 
         Returns
         -------

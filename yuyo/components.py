@@ -179,7 +179,7 @@ class ComponentContext:
             or `ComponentContext.respond` should create a new message or
             `hikari.ResponseType.DEFERRED_MESSAGE_UPDATE` to indicate that the following
             call to the aforementioned methods should update the existing message.
-        flags : typing.Union[hikari.UndefinedType, int, hikari.MessageFlag]
+        flags : hikari.UndefinedType | int | hikari.MessageFlag
             The flags to set for this deferral.
 
             As of writing, the only message flag which can be set here is
@@ -209,11 +209,11 @@ class ComponentContext:
         embed: hikari.UndefinedOr[hikari.Embed] = hikari.UNDEFINED,
         embeds: hikari.UndefinedOr[typing.Sequence[hikari.Embed]] = hikari.UNDEFINED,
         mentions_everyone: hikari.UndefinedOr[bool] = hikari.UNDEFINED,
-        user_mentions: hikari.UndefinedOr[
-            typing.Union[hikari.SnowflakeishSequence[hikari.PartialUser], bool]
+        user_mentions: typing.Union[
+            hikari.SnowflakeishSequence[hikari.PartialUser], bool, hikari.UndefinedType
         ] = hikari.UNDEFINED,
-        role_mentions: hikari.UndefinedOr[
-            typing.Union[hikari.SnowflakeishSequence[hikari.PartialRole], bool]
+        role_mentions: typing.Union[
+            hikari.SnowflakeishSequence[hikari.PartialRole], bool, hikari.UndefinedType
         ] = hikari.UNDEFINED,
         tts: hikari.UndefinedOr[bool] = hikari.UNDEFINED,
         flags: typing.Union[hikari.UndefinedType, int, hikari.MessageFlag] = hikari.UNDEFINED,
@@ -222,7 +222,7 @@ class ComponentContext:
 
         Parameters
         ----------
-        content : hikari.UndefinedOr[typing.Any]
+        content : typing.Any | hikari.UNDEFINED
             The content to respond with.
 
             If provided, the message contents. If
@@ -230,11 +230,11 @@ class ComponentContext:
             in the content. Any other value here will be cast to a
             `str`.
 
-            If this is a `hikari.embeds.Embed` and no `embed` nor `embeds` kwarg
+            If this is a `hikari.Embed` and no `embed` nor `embeds` kwarg
             is provided, then this will instead update the embed. This allows
             for simpler syntax when sending an embed alone.
 
-            Likewise, if this is a `hikari.files.Resource`, then the
+            Likewise, if this is a `hikari.Resource`, then the
             content is instead treated as an attachment if no `attachment` and
             no `attachments` kwargs are provided.
 
@@ -242,40 +242,40 @@ class ComponentContext:
         ----------------
         ensure_result : bool
             This parameter does nothing but necessary to keep the signature with `Context`.
-        tts : hikari.UndefinedOr[bool]
+        tts : bool | hikari.UNDEFINED
             Whether to respond with tts/text to speech or no.
-        reply : hikari.Undefinedor[hikari.SnowflakeishOr[hikari.PartialMessage]]
+        reply : hikari.Snowflakeish | hikari.PartialMessage | hikari.UNDEFINED
             Whether to reply instead of sending the content to the context.
-        nonce : hikari.UndefinedOr[str]
+        nonce : str | hikari.UNDEFINED
             The nonce that validates that the message was sent.
-        attachment : hikari.UndefinedOr[hikari.Resourceish]
+        attachment : hikari.Resourceish | hikari.UNDEFINED
             A singular attachment to respond with.
-        attachments : hikari.UndefinedOr[collections.Sequence[hikari.Resourceish]]
+        attachments : collections.abc.Sequence[hikari.Resourceish] | hikari.UNDEFINED
             A sequence of attachments to respond with.
-        component : hikari.undefined.UndefinedOr[hikari.api.special_endpoints.ComponentBuilder]
+        component : hikari.api.special_endpoints.ComponentBuilder | hikari.UNDEFINED
             If provided, builder object of the component to include in this message.
-        components : hikari.undefined.UndefinedOr[typing.Sequence[hikari.api.special_endpoints.ComponentBuilder]]
+        components : collections.abc.Sequence[hikari.api.special_endpoints.ComponentBuilder] | hikari.UNDEFINED
             If provided, a sequence of the component builder objects to include
             in this message.
-        embed : hikari.UndefinedOr[hikari.Embed]
+        embed : hikari.Embed | hikari.UNDEFINED
             An embed to respond with.
-        embeds : hikari.UndefinedOr[collections.Sequence[hikari.Embed]]
+        embeds : collections.abc.Sequence[hikari.Embed] | hikari.UNDEFINED
             A sequence of embeds to respond with.
-        mentions_everyone : hikari.undefined.UndefinedOr[bool]
+        mentions_everyone : bool | hikari.UNDEFINED
             If provided, whether the message should parse @everyone/@here
             mentions.
-        user_mentions : hikari.undefined.UndefinedOr[typing.Union[hikari.snowflakes.SnowflakeishSequence[hikari.users.PartialUser], bool]]
+        user_mentions : hikari.SnowflakeishSequence[hikari.PartialUser] | bool | hikari.UNDEFINED
             If provided, and `True`, all mentions will be parsed.
             If provided, and `False`, no mentions will be parsed.
             Alternatively this may be a collection of
-            `hikari.snowflakes.Snowflake`, or `hikari.users.PartialUser`
+            `hikari.Snowflake`, or `hikari.PartialUser`
             derivatives to enforce mentioning specific users.
-        role_mentions : hikari.undefined.UndefinedOr[typing.Union[hikari.snowflakes.SnowflakeishSequence[hikari.guilds.PartialRole], bool]]
+        role_mentions : hikari.SnowflakeishSequence[hikari.PartialRole] | bool | hikari.UNDEFINED
             If provided, and `True`, all mentions will be parsed.
             If provided, and `False`, no mentions will be parsed.
             Alternatively this may be a collection of
-            `hikari.snowflakes.Snowflake`, or
-            `hikari.guilds.PartialRole` derivatives to enforce mentioning
+            `hikari.Snowflake`, or
+            `hikari.PartialRole` derivatives to enforce mentioning
             specific roles.
 
         Notes
@@ -284,19 +284,16 @@ class ComponentContext:
         convenience.
         * If a `pathlib.PurePath` or `str` to a valid URL, the
             resource at the given URL will be streamed to Discord when
-            sending the message. Subclasses of
-            `hikari.files.WebResource` such as
-            `hikari.files.URL`,
-            `hikari.messages.Attachment`,
-            `hikari.emojis.Emoji`,
-            `EmbedResource`, etc will also be uploaded this way.
+            sending the message. Subclasses of `hikari.WebResource` such as
+            `hikari.URL`, `hikari.Attachment`, `hikari.Emoji`, `EmbedResource`,
+            etc will also be uploaded this way.
             This will use bit-inception, so only a small percentage of the
             resource will remain in memory at any one time, thus aiding in
             scalability.
-        * If a `hikari.files.Bytes` is passed, or a `str`
+        * If a `hikari.Bytes` is passed, or a `str`
             that contains a valid data URI is passed, then this is uploaded
             with a randomized file name if not provided.
-        * If a `hikari.files.File`, `pathlib.PurePath` or
+        * If a `hikari.File`, `pathlib.PurePath` or
             `str` that is an absolute or relative path to a file
             on your file system is passed, then this resource is uploaded
             as an attachment using non-blocking code internally and streamed
@@ -307,7 +304,7 @@ class ComponentContext:
 
         Returns
         -------
-        hikari.messages.Message
+        hikari.Message
             The message that has been created.
 
         Raises
@@ -317,24 +314,24 @@ class ComponentContext:
             `role_mentions` or `user_mentions`.
         TypeError
             If both `attachment` and `attachments` are specified.
-        hikari.errors.BadRequestError
+        hikari.BadRequestError
             This may be raised in several discrete situations, such as messages
             being empty with no attachments or embeds; messages with more than
             2000 characters in them, embeds that exceed one of the many embed
             limits; too many attachments; attachments that are too large;
             invalid image URLs in embeds; if `reply` is not found or not in the
             same channel as `channel`; too many components.
-        hikari.errors.UnauthorizedError
+        hikari.UnauthorizedError
             If you are unauthorized to make the request (invalid/missing token).
-        hikari.errors.ForbiddenError
+        hikari.ForbiddenError
             If you are missing the `SEND_MESSAGES` in the channel or the
             person you are trying to message has the DM's disabled.
-        hikari.errors.NotFoundError
+        hikari.NotFoundError
             If the channel is not found.
-        hikari.errors.RateLimitTooLongError
+        hikari.RateLimitTooLongError
             Raised in the event that a rate limit occurs that is
             longer than `max_rate_limit` when making a request.
-        hikari.errors.RateLimitedError
+        hikari.RateLimitedError
             Usually, Hikari will handle and retry on hitting
             rate-limits automatically. This includes most bucket-specific
             rate-limits and global rate-limits. In some rare edge cases,
@@ -342,7 +339,7 @@ class ComponentContext:
             rate-limiting, such as limits per attribute. These cannot be
             detected or handled normally by Hikari due to their undocumented
             nature, and will trigger this exception if they occur.
-        hikari.errors.InternalServerError
+        hikari.InternalServerError
             If an internal error occurs on Discord while handling the request.
         """  # noqa: E501 - Line too long
         async with self._response_lock:
@@ -374,11 +371,11 @@ class ComponentContext:
         embed: hikari.UndefinedOr[hikari.Embed] = hikari.UNDEFINED,
         embeds: hikari.UndefinedOr[typing.Sequence[hikari.Embed]] = hikari.UNDEFINED,
         mentions_everyone: hikari.UndefinedOr[bool] = hikari.UNDEFINED,
-        user_mentions: hikari.UndefinedOr[
-            typing.Union[hikari.SnowflakeishSequence[hikari.PartialUser], bool]
+        user_mentions: typing.Union[
+            hikari.SnowflakeishSequence[hikari.PartialUser], bool, hikari.UndefinedType
         ] = hikari.UNDEFINED,
-        role_mentions: hikari.UndefinedOr[
-            typing.Union[hikari.SnowflakeishSequence[hikari.PartialRole], bool]
+        role_mentions: typing.Union[
+            hikari.SnowflakeishSequence[hikari.PartialRole], bool, hikari.UndefinedType
         ] = hikari.UNDEFINED,
         flags: typing.Union[int, hikari.MessageFlag, hikari.UndefinedType] = hikari.UNDEFINED,
         tts: hikari.UndefinedOr[bool] = hikari.UNDEFINED,
@@ -450,11 +447,11 @@ class ComponentContext:
         embed: hikari.UndefinedOr[hikari.Embed] = hikari.UNDEFINED,
         embeds: hikari.UndefinedOr[typing.Sequence[hikari.Embed]] = hikari.UNDEFINED,
         mentions_everyone: hikari.UndefinedOr[bool] = hikari.UNDEFINED,
-        user_mentions: hikari.UndefinedOr[
-            typing.Union[hikari.SnowflakeishSequence[hikari.PartialUser], bool]
+        user_mentions: typing.Union[
+            hikari.SnowflakeishSequence[hikari.PartialUser], bool, hikari.UndefinedType
         ] = hikari.UNDEFINED,
-        role_mentions: hikari.UndefinedOr[
-            typing.Union[hikari.SnowflakeishSequence[hikari.PartialRole], bool]
+        role_mentions: typing.Union[
+            hikari.SnowflakeishSequence[hikari.PartialRole], bool, hikari.UndefinedType
         ] = hikari.UNDEFINED,
         flags: typing.Union[int, hikari.MessageFlag, hikari.UndefinedType] = hikari.UNDEFINED,
         tts: hikari.UndefinedOr[bool] = hikari.UNDEFINED,
@@ -499,11 +496,11 @@ class ComponentContext:
         embeds: hikari.UndefinedOr[typing.Sequence[hikari.Embed]] = hikari.UNDEFINED,
         replace_attachments: bool = False,
         mentions_everyone: hikari.UndefinedOr[bool] = hikari.UNDEFINED,
-        user_mentions: hikari.UndefinedOr[
-            typing.Union[hikari.SnowflakeishSequence[hikari.PartialUser], bool]
+        user_mentions: typing.Union[
+            hikari.SnowflakeishSequence[hikari.PartialUser], bool, hikari.UndefinedType
         ] = hikari.UNDEFINED,
-        role_mentions: hikari.UndefinedOr[
-            typing.Union[hikari.SnowflakeishSequence[hikari.PartialRole], bool]
+        role_mentions: typing.Union[
+            hikari.SnowflakeishSequence[hikari.PartialRole], bool, hikari.UndefinedType
         ] = hikari.UNDEFINED,
     ) -> hikari.Message:
         result = await self._interaction.edit_initial_response(
@@ -534,11 +531,11 @@ class ComponentContext:
         embeds: hikari.UndefinedOr[typing.Sequence[hikari.Embed]] = hikari.UNDEFINED,
         replace_attachments: bool = False,
         mentions_everyone: hikari.UndefinedOr[bool] = hikari.UNDEFINED,
-        user_mentions: hikari.UndefinedOr[
-            typing.Union[hikari.SnowflakeishSequence[hikari.PartialUser], bool]
+        user_mentions: typing.Union[
+            hikari.SnowflakeishSequence[hikari.PartialUser], bool, hikari.UndefinedType
         ] = hikari.UNDEFINED,
-        role_mentions: hikari.UndefinedOr[
-            typing.Union[hikari.SnowflakeishSequence[hikari.PartialRole], bool]
+        role_mentions: typing.Union[
+            hikari.SnowflakeishSequence[hikari.PartialRole], bool, hikari.UndefinedType
         ] = hikari.UNDEFINED,
     ) -> hikari.Message:
         if self._last_response_id:
@@ -597,11 +594,11 @@ class ComponentContext:
         embed: hikari.UndefinedOr[hikari.Embed] = hikari.UNDEFINED,
         embeds: hikari.UndefinedOr[typing.Sequence[hikari.Embed]] = hikari.UNDEFINED,
         mentions_everyone: hikari.UndefinedOr[bool] = hikari.UNDEFINED,
-        user_mentions: hikari.UndefinedOr[
-            typing.Union[hikari.SnowflakeishSequence[hikari.PartialUser], bool]
+        user_mentions: typing.Union[
+            hikari.SnowflakeishSequence[hikari.PartialUser], bool, hikari.UndefinedType
         ] = hikari.UNDEFINED,
-        role_mentions: hikari.UndefinedOr[
-            typing.Union[hikari.SnowflakeishSequence[hikari.PartialRole], bool]
+        role_mentions: typing.Union[
+            hikari.SnowflakeishSequence[hikari.PartialRole], bool, hikari.UndefinedType
         ] = hikari.UNDEFINED,
     ) -> typing.Optional[hikari.Message]:
         ...
@@ -617,11 +614,11 @@ class ComponentContext:
         embed: hikari.UndefinedOr[hikari.Embed] = hikari.UNDEFINED,
         embeds: hikari.UndefinedOr[typing.Sequence[hikari.Embed]] = hikari.UNDEFINED,
         mentions_everyone: hikari.UndefinedOr[bool] = hikari.UNDEFINED,
-        user_mentions: hikari.UndefinedOr[
-            typing.Union[hikari.SnowflakeishSequence[hikari.PartialUser], bool]
+        user_mentions: typing.Union[
+            hikari.SnowflakeishSequence[hikari.PartialUser], bool, hikari.UndefinedType
         ] = hikari.UNDEFINED,
-        role_mentions: hikari.UndefinedOr[
-            typing.Union[hikari.SnowflakeishSequence[hikari.PartialRole], bool]
+        role_mentions: typing.Union[
+            hikari.SnowflakeishSequence[hikari.PartialRole], bool, hikari.UndefinedType
         ] = hikari.UNDEFINED,
     ) -> hikari.Message:
         ...
@@ -636,11 +633,11 @@ class ComponentContext:
         embed: hikari.UndefinedOr[hikari.Embed] = hikari.UNDEFINED,
         embeds: hikari.UndefinedOr[typing.Sequence[hikari.Embed]] = hikari.UNDEFINED,
         mentions_everyone: hikari.UndefinedOr[bool] = hikari.UNDEFINED,
-        user_mentions: hikari.UndefinedOr[
-            typing.Union[hikari.SnowflakeishSequence[hikari.PartialUser], bool]
+        user_mentions: typing.Union[
+            hikari.SnowflakeishSequence[hikari.PartialUser], bool, hikari.UndefinedType
         ] = hikari.UNDEFINED,
-        role_mentions: hikari.UndefinedOr[
-            typing.Union[hikari.SnowflakeishSequence[hikari.PartialRole], bool]
+        role_mentions: typing.Union[
+            hikari.SnowflakeishSequence[hikari.PartialRole], bool, hikari.UndefinedType
         ] = hikari.UNDEFINED,
     ) -> typing.Optional[hikari.Message]:
         async with self._response_lock:
@@ -699,7 +696,7 @@ class ComponentClient:
 
     Other Parameters
     ----------------
-    event_manager : typing.Optional[hikari.api.EventManager]
+    event_manager : hikari.api.EventManager | None
         The event manager this client should listen to dispatched component
         interactions from if applicable.
     event_managed : bool
@@ -707,7 +704,7 @@ class ComponentClient:
         the lifetime events dispatched by `event_manager`.
 
         Defaults to `True` if an event manager is passed.
-    server : typing.Optional[hikari.api.InteractionServer]
+    server : hikari.api.InteractionServer | None
         The server this client should listen to component interactions
         from if applicable.
 
@@ -954,7 +951,7 @@ class ComponentClient:
 
         Returns
         -------
-        typing.Optional[CallbackSig]
+        CallbackSig | None
             The callback for the custom_id, or `None` if it doesn't exist.
         """
         return self._constant_ids.get(custom_id) or self._prefix_ids.get(custom_id)
@@ -1008,7 +1005,7 @@ class ComponentClient:
 
         Returns
         -------
-        Callable[[CallbackSigT], CallbackSigT]
+        collections.abc.Callable[[CallbackSigT], CallbackSigT]
             A decorator to register the callback.
 
         Raises
@@ -1037,7 +1034,7 @@ class ComponentClient:
 
         Parameters
         ----------
-        message : hikari.SnowflakeishOr[hikari.Message]
+        message : hikari.Snowflakeish | hikari.Message
             The message to set the executor for.
         executor : AbstractComponentExecutor
             The executor to set.
@@ -1060,12 +1057,12 @@ class ComponentClient:
 
         Parameters
         ----------
-        message : hikari.SnowflakeishOr[hikari.Message]
+        message : hikari.Snowflakeish | hikari.Message
             The message to get the executor for.
 
         Returns
         -------
-        typing.Optional[AbstractComponentExecutor]
+        AbstractComponentExecutor | None
             The executor set for the message or `None` if none is set.
         """
         return self._executors.get(int(message))
@@ -1077,7 +1074,7 @@ class ComponentClient:
 
         Parameters
         ----------
-        message : hikari.SnowflakeishOr[hikari.Message]
+        message : hikari.Snowflakeish | hikari.Message
             The message to remove the executor for.
 
         Returns
@@ -1200,7 +1197,7 @@ class WaitForExecutor(AbstractComponentExecutor):
 
     Parameters
     ----------
-    authors: typing.Optional[typing.Iterable[hikari.SnowflakeishOr[hikari.User]]]
+    authors: collections.abc.Iterable[hikari.Snowflakeish | hikari.User] | None
         The authors of the entries.
 
         If None is passed here then the paginator will be public (meaning that
@@ -1606,9 +1603,9 @@ class ComponentPaginator(ActionRowExecutor):
     iterator: yuyo.pagination.IteratorT[pagination.EntryT]
         The iterator to paginate.
 
-        This should be an iterator of tuples of `(content: hikari.UndefinedOr[str],
-        embed: hikari.UndefinedOr[hikari.Embed])`.
-    authors: typing.Optional[typing.Iterable[hikari.SnowflakeishOr[hikari.User]]]
+        This should be an iterator of tuples of `(content: str | hikari.UNDEFINED,
+        embed: hikari.Embed | hikari.UNDEFINED)`.
+    authors: collections.abc.Iterable[hikari.Snowflakeish | hikari.User] | hikari.UNDEFINED
         The authors of the entries.
 
         If None is passed here then the paginator will be public (meaning that
@@ -1620,7 +1617,7 @@ class ComponentPaginator(ActionRowExecutor):
         Whether or not the responses made on contexts spawned from this paginator
         should default to ephemeral (meaning only the author can see them) unless
         `flags` is specified on the response method.
-    triggers: typing.Collection[str]
+    triggers: collections.abc.Collection[str]
         Collection of the unicode emojis that should trigger this paginator.
 
         As of current the only usable emojis are `pagination.LEFT_TRIANGLE`,
@@ -1693,7 +1690,7 @@ class ComponentPaginator(ActionRowExecutor):
 
         Returns
         -------
-        typing.Sequence[hikari.api.ComponentBuilder]
+        collections.abc.Sequence[hikari.api.ComponentBuilder]
             The component builders for this paginator.
         """
         return [self]
@@ -1730,7 +1727,7 @@ class ComponentPaginator(ActionRowExecutor):
 
         Returns
         -------
-        typing.Optional[pagination.EntryT]
+        pagination.EntryT | None
             The next entry in this paginator, or `None` if there are no more entries.
         """
         # Check to see if we're behind the buffer before trying to go forward in the generator.

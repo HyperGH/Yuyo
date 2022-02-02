@@ -138,7 +138,7 @@ class AsgiAdapter:
 
         Parameters
         ----------
-        callback : typing.Callable[[], typing.Union[None, typing.Awaitable[None]]]
+        callback : collections.abc.Callable[[], None | collections.abc.Awaitable[None]]
             The shutdown callback to add.
 
         Returns
@@ -160,7 +160,7 @@ class AsgiAdapter:
 
         Parameters
         ----------
-        callback : typing.Callable[[], typing.Union[None, typing.Awaitable[None]]]
+        callback : collections.abc.Callable[[], None | collections.abc.Awaitable[None]]
             The startup callback to add.
 
         Returns
@@ -371,10 +371,10 @@ class AsgiBot(AsgiAdapter, traits.RESTBotAware):
 
         Parameters
         ----------
-        token : typing.Union[str, None, hikari.api.rest.TokenStrategy]
+        token : str | None | hikari.api.rest.TokenStrategy
             The bot or bearer token. If no token is to be used,
             this can be undefined.
-        token_type : typing.Union[str, hikari.applications.TokenType, None]
+        token_type : str | hikari.applications.TokenType, None
             The type of token in use. This should only be passed when `str`
             is passed for `token`, can be `"Bot"` or `"Bearer"` and will be
             defaulted to `"Bearer"` in this situation.
@@ -390,7 +390,7 @@ class AsgiBot(AsgiAdapter, traits.RESTBotAware):
             started and stopped based on the Asgi lifespan events.
 
             Defaults to `True`.
-        executor : typing.Optional[concurrent.futures.Executor]
+        executor : concurrent.futures.Executor | None
             Defaults to `builns.None`. If non-`None`, then this executor
             is used instead of the `concurrent.futures.ThreadPoolExecutor` attached
             to the `asyncio.AbstractEventLoop` that the bot will run on. This
@@ -402,7 +402,7 @@ class AsgiBot(AsgiAdapter, traits.RESTBotAware):
             relies on all objects used in IPC to be `pickle`able. Many third-party
             libraries will not support this fully though, so your mileage may vary
             on using ProcessPoolExecutor implementations with this parameter.
-        http_settings : typing.Optional[hikari.config.HTTPSettings]
+        http_settings : hikari.config.HTTPSettings | None
             Optional custom HTTP configuration settings to use. Allows you to
             customise functionality such as whether SSL-verification is enabled,
             what timeouts `aiohttp` should expect to use for requests, and behavior
@@ -419,20 +419,20 @@ class AsgiBot(AsgiAdapter, traits.RESTBotAware):
             Note that this only applies to the REST API component that communicates
             with Discord, and will not affect sharding or third party HTTP endpoints
             that may be in use.
-        max_retries : typing.Optional[int]
+        max_retries : int | None
             Maximum number of times a request will be retried if
 
             it fails with a `5xx` status. Defaults to 3 if set to `None`.
-        proxy_settings : typing.Optional[hikari.config.ProxySettings]
+        proxy_settings : hikari.config.ProxySettings | None
             Custom proxy settings to use with network-layer logic
             in your application to get through an HTTP-proxy.
-        public_key : typing.Union[str, bytes, None]
+        public_key : str | bytes | None
             The public key to use to verify received interaction requests.
 
             This may be a hex encoded `str` or the raw `bytes`.
             If left as `None` then the client will try to work this value
             out based on `token`.
-        rest_url : typing.Optional[str]
+        rest_url : str | None
             Defaults to the Discord REST API URL if `None`. Can be
             overridden if you are attempting to point to an unofficial endpoint, or
             if you are attempting to mock/stub the Discord API for any reason.

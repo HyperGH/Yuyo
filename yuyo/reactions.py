@@ -97,7 +97,7 @@ class AbstractReactionHandler(abc.ABC):
 
         Parameters
         ----------
-        message : hikari.messages.Message
+        message : hikari.Message
             The message to bind this handler to.
         """
         raise NotImplementedError
@@ -208,12 +208,12 @@ class ReactionHandler(AbstractReactionHandler):
 
         Parameters
         ----------
-        emoji_identifier: typing.Union[str, hikari.snowflakes.SnowflakeishOr[hikari.emojis.CustomEmoji]]
+        emoji_identifier: str | hikari.Snowflakeish | hikari.CustomEmoji
             Identifier of the emoji this callback is for.
 
             This should be a snowfake if this is for a custom emoji or a string
             if this is for a unicode emoji.
-        callback : typing.Callable[[hikari.reaction_events.ReactionAddEvent], typing.Awaitable[None]]
+        callback : collections.abc.Callable[[hikari.ReactionAddEvent], collections.abc.Awaitable[None]]
             The callback to add.
 
             This should be a function that accepts a single parameter,
@@ -232,7 +232,7 @@ class ReactionHandler(AbstractReactionHandler):
 
         Parameters
         ----------
-        emoji_identifier: typing.Union[str, hikari.snowflakes.SnowflakeishOr[hikari.emojis.CustomEmoji]]
+        emoji_identifier: str | hikari.Snowflakeish | hikari.CustomEmoji
             Identifier of the emoji the callback to remove is for.
 
             This should be a snowfake if this is for a custom emoji or a string
@@ -250,7 +250,7 @@ class ReactionHandler(AbstractReactionHandler):
 
         Parameters
         ----------
-        emoji_identifier: typing.Union[str, hikari.snowflakes.SnowflakeishOr[hikari.emojis.CustomEmoji]]
+        emoji_identifier: str | hikari.Snowflakeish | hikari.CustomEmoji
             Identifier of the emoji this callback is for.
 
             This should be a snowfake if this is for a custom emoji or a string
@@ -258,7 +258,7 @@ class ReactionHandler(AbstractReactionHandler):
 
         Returns
         -------
-        typing.Callabke[[CallbackSigT], CallbackSigT]
+        collections.abc.Callable[[CallbackSigT], CallbackSigT]
             A decorator to add a callback to this reaction handler.
         """
 
@@ -321,14 +321,14 @@ class ReactionPaginator(ReactionHandler):
 
     Parameters
     ----------
-    iterator : Iterator[typing.Tuple[undefined.UndefinedOr[str], undefined.UndefinedOr[embeds.Embed]]]
+    iterator : yuyo.pagination.IteratorT[tuple[str | hikari.UNDEFINED, embeds.Embed | hikari.UNDEFINED]]
         Either an asynchronous or synchronous iterator of the entries this
         should paginate through.
         Entry[0] represents the message's possible content and can either be
-        `builtins.str` or `hikari.undefined.UNDEFINED` and Entry[1] represents
-        the message's possible embed and can either be `hikari.embeds.Embed`
-        or `hikari.undefined.UNDEFINED`.
-    authors : typing.Iterable[hikari.snowflakes.SnowflakeishOr[hikari.users.User]]
+        `str` or `hikari.UNDEFINED` and Entry[1] represents
+        the message's possible embed and can either be `hikari.Embed`
+        or `hikari.UNDEFINED`.
+    authors : collections.abc.Iterable[hikari.Snowflakeish | hikari.User]
         An iterable of IDs of the users who can call this paginator.
         If left empty then all users will be able to call this
         paginator.
@@ -454,7 +454,7 @@ class ReactionPaginator(ReactionHandler):
 
         Parameters
         ----------
-        user : hikari.snowflakes.SnowflakeishOr[hikari.users.User]
+        user : hikari.Snowflakeish | hikari.User
             The user to add as an owner for this handler.
         """
         self._authors.add(hikari.Snowflake(user))
@@ -469,7 +469,7 @@ class ReactionPaginator(ReactionHandler):
 
         Parameters
         ----------
-        user : hikari.snowflakes.SnowflakeishOr[hikari.users.User]
+        user : hikari.Snowflakeish | hikari.User
             The user to remove from this handler's owners.
         """
         try:
@@ -488,10 +488,10 @@ class ReactionPaginator(ReactionHandler):
 
         Other Parameters
         ----------------
-        remove_reactions : builtins.bool
+        remove_reactions : bool
             Whether this should remove the reactions that were being used to
             paginate through this from the previously registered message.
-            This defaults to `builtins.False`.
+            This defaults to `False`.
         """
         if message := self._message:
             self._message = None
@@ -578,18 +578,18 @@ class ReactionPaginator(ReactionHandler):
 
         Other Parameters
         ----------------
-        message : typing.Optional[hikari.messages.Message]
+        message : hikari.Message | None
             If already created, the message this handler should target.
-            If left as `builtins.None` then this call will create a message
+            If left as `None` then this call will create a message
             in the channel provided when initiating the handler.
         add_reactions : bool
             Whether this should also add reactions that'll be used to paginate
             over this resource.
-            This defaults to `builtins.True`.
+            This defaults to `True`.
 
         Returns
         -------
-        hikari.messages.Message
+        hikari.Message
             Object of the message this handler now targets.
             If `message` was not supplied then this will be the object of a newly created
             message, otherwise this will be what was supplied as `message`.
@@ -640,9 +640,9 @@ class ReactionClient:
 
     Parameters
     ----------
-    rest : hikari.api.rest.RESTClient
+    rest : hikari.api.RESTClient
         The REST client to register this reaction client with.
-    event_manager : hikari.api.event_manager.EventManager
+    event_manager : hikari.api.EventManager
         The event manager client to register this reaction client with.
 
 
@@ -739,7 +739,7 @@ class ReactionClient:
 
         Parameters
         ----------
-        message : hikari.snowflakes.SnowflakeishOr[hikari.messages.Message]
+        message : hikari.Snowflakeish | hikari.Message
             The message ID to add register a reaction handler with.
         paginator : AbstractReactionHandler
             The object of the opened paginator to register in this reaction client.
@@ -757,13 +757,13 @@ class ReactionClient:
 
         Parameters
         ----------
-        message : hikari.snowflakes.SnowflakeishOr[hikari.messages.Message]
+        message : hikari.Snowflakeish | hikari.Message
             The message ID to remove a paginator for.
 
         Returns
         -------
         AbstractReactionHandler
-            The object of the registered paginator if found else `builtins.None`.
+            The object of the registered paginator if found else `None`.
         """
         return self._handlers.get(hikari.Snowflake(message))
 
@@ -777,13 +777,13 @@ class ReactionClient:
 
         Parameters
         ----------
-        message : hikari.snowflakes.SnowflakeishOr[hikari.messages.Message]
+        message : hikari.Snowflakeish | hikari.Message
             The message ID to remove a paginator for.
 
         Returns
         -------
         AbstractReactionHandler
-            The object of the registered paginator if found else `builtins.None`.
+            The object of the registered paginator if found else `None`.
         """
         return self._handlers.pop(hikari.Snowflake(message))
 
