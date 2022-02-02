@@ -29,6 +29,9 @@
 # CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+# pyright: reportPrivateUsage=none
+
 import asyncio
 import contextlib
 import traceback
@@ -275,6 +278,7 @@ class TestAsgiAdapter:
             side_effect=[{"body": b"cat", "more_body": True}, {"body": b"girls", "more_body": False}]
         )
         mock_send = mock.AsyncMock()
+        assert isinstance(stub_server.on_interaction, mock.Mock)
         stub_server.on_interaction.return_value.headers = {
             "Content-Type": "jazz hands",
             "kill": "me baby",
@@ -318,6 +322,7 @@ class TestAsgiAdapter:
         http_scope["path"] = "/"
         mock_receive = mock.AsyncMock()
         mock_send = mock.AsyncMock()
+        assert isinstance(stub_server.on_interaction, mock.Mock)
 
         await adapter.process_request(http_scope, mock_receive, mock_send)
 
@@ -344,6 +349,7 @@ class TestAsgiAdapter:
         http_scope["path"] = "/not-base-route"
         mock_receive = mock.AsyncMock()
         mock_send = mock.AsyncMock()
+        assert isinstance(stub_server.on_interaction, mock.Mock)
 
         await adapter.process_request(http_scope, mock_receive, mock_send)
 
@@ -368,6 +374,7 @@ class TestAsgiAdapter:
     ):
         mock_receive = mock.AsyncMock(return_value={"body": b"", "more_body": False})
         mock_send = mock.AsyncMock()
+        assert isinstance(stub_server.on_interaction, mock.Mock)
 
         await adapter.process_request(http_scope, mock_receive, mock_send)
 
@@ -392,6 +399,7 @@ class TestAsgiAdapter:
     ):
         mock_receive = mock.AsyncMock(return_value={})
         mock_send = mock.AsyncMock()
+        assert isinstance(stub_server.on_interaction, mock.Mock)
 
         await adapter.process_request(http_scope, mock_receive, mock_send)
 
@@ -417,6 +425,7 @@ class TestAsgiAdapter:
         http_scope["headers"] = []
         mock_receive = mock.AsyncMock(return_value={"body": b"gay", "more_body": False})
         mock_send = mock.AsyncMock()
+        assert isinstance(stub_server.on_interaction, mock.Mock)
 
         await adapter.process_request(http_scope, mock_receive, mock_send)
 
@@ -444,6 +453,7 @@ class TestAsgiAdapter:
         http_scope["headers"] = [(b"Content-Type", b"NOT JSON")]
         mock_receive = mock.AsyncMock(return_value={"body": b"gay", "more_body": False})
         mock_send = mock.AsyncMock()
+        assert isinstance(stub_server.on_interaction, mock.Mock)
 
         await adapter.process_request(http_scope, mock_receive, mock_send)
 
@@ -471,6 +481,7 @@ class TestAsgiAdapter:
         http_scope["headers"] = [(b"Content-Type", b"application/json"), (b"x-signature-ed25519", b"676179")]
         mock_receive = mock.AsyncMock(return_value={"body": b"gay", "more_body": False})
         mock_send = mock.AsyncMock()
+        assert isinstance(stub_server.on_interaction, mock.Mock)
 
         await adapter.process_request(http_scope, mock_receive, mock_send)
 
@@ -502,6 +513,7 @@ class TestAsgiAdapter:
         http_scope["headers"] = [(b"Content-Type", b"application/json"), (b"x-signature-timestamp", b"87")]
         mock_receive = mock.AsyncMock(return_value={"body": b"gay", "more_body": False})
         mock_send = mock.AsyncMock()
+        assert isinstance(stub_server.on_interaction, mock.Mock)
 
         await adapter.process_request(http_scope, mock_receive, mock_send)
 
@@ -542,6 +554,7 @@ class TestAsgiAdapter:
         ]
         mock_receive = mock.AsyncMock(return_value={"body": b"gay", "more_body": False})
         mock_send = mock.AsyncMock()
+        assert isinstance(stub_server.on_interaction, mock.Mock)
 
         await adapter.process_request(http_scope, mock_receive, mock_send)
 
@@ -580,6 +593,7 @@ class TestAsgiAdapter:
         mock_receive = mock.AsyncMock(return_value={"body": b"transive", "more_body": False})
         mock_send = mock.AsyncMock()
         stub_error = Exception("💩")
+        assert isinstance(stub_server.on_interaction, mock.Mock)
         stub_server.on_interaction.side_effect = stub_error
 
         with pytest.raises(Exception, match=".*") as exc_info:
@@ -622,6 +636,7 @@ class TestAsgiAdapter:
             side_effect=[{"body": b"cat", "more_body": True}, {"body": b"girls", "more_body": False}]
         )
         mock_send = mock.AsyncMock()
+        assert isinstance(stub_server.on_interaction, mock.Mock)
         stub_server.on_interaction.return_value.payload = None
         stub_server.on_interaction.return_value.headers = None
 
